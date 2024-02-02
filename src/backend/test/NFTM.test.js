@@ -3,7 +3,9 @@ const { expect } = require("chai");
 describe("NFTMarketplace", async () => {
   let deployer, add1, add2, nft, marketplace;
   let feepercent = 1;
-  let URI='sample URL'
+  let URI = "sample URL";
+  const toWei = (num) => ethers.utils.parseEther(num.toString());
+  const fromWei = (num) => ethers.utils.formatEther(num);
 
   beforeEach(async () => {
     const NFT = await ethers.getContractFactory("NFT");
@@ -26,14 +28,45 @@ describe("NFTMarketplace", async () => {
 
   describe("Minting NFTS", () => {
     it("should track minting NFT", async () => {
-        await  nft.connect(add1).mint(URI);
-        expect(await nft.tokenCount()).to.equal(1);
-        expect(await nft.balanceOf(add1.address)).to.equal(1);
-        expect(await nft.tokenURI(1)).to.equal(URI);
-        await  nft.connect(add2).mint(URI);
-        expect(await nft.tokenCount()).to.equal(2);
-        expect(await nft.balanceOf(add2.address)).to.equal(1);
-        expect(await nft.tokenURI(2)).to.equal(URI);
+      await nft.connect(add1).mint(URI);
+      expect(await nft.tokenCount()).to.equal(1);
+      expect(await nft.balanceOf(add1.address)).to.equal(1);
+      expect(await nft.tokenURI(1)).to.equal(URI);
+      await nft.connect(add2).mint(URI);
+      expect(await nft.tokenCount()).to.equal(2);
+      expect(await nft.balanceOf(add2.address)).to.equal(1);
+      expect(await nft.tokenURI(2)).to.equal(URI);
+    });
+  });
+
+  describe("market marketplace Items", () => {
+    beforeEach(async () => {
+      await nft.connect(add1).mint(URI);
+      await nft.connect(add1).setApprovalForAll(marketplace.address, true);
+    });
+
+    it("should track ", async () => {
+      await expect(
+        marketplace.connect(add1).makeItems(nft.address, 1, toWei(1))
+      )
+        .to.emit(marketplace, "Offered")
+        .withArgs(1, nft.address, 1, toWei(1), add1.address);
+
+      expect(await nft.ownerOf(1)).to.equal(marketplace.address);
+      expect(await marketplace.itemCount()).to.equal(1);
+
+      const item = await marketplace.items(1);
+      expect(item.itemId).to.equal(1);
+      expect(item.nft).to.equal(nft.address);
+      expect(item.tokenId).to.equal(1);
+      expect(item.price).to.equal(toWei(1));
+      expect(item.sold).to.equal(false);
+    });
+
+    it("should fail if price is set to zero", async () => {
+      await expect(
+        marketplace.connect(add1).makeItems(nft.address, 1, 0)
+      ).to.be.revertedWith("Price must be greater than zero");
     });
   });
 });
