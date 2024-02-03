@@ -92,10 +92,11 @@ const Create = ({ marketplace, nft }) => {
   
   return (
     <div className="container-fluid mt-5">
+      <h1 className="blockquote-footer mb-5">Create Your own NFT</h1>
       <div className="row">
         <main
           role="main"
-          className="col-lg-12 mx-auto"
+          className="col-lg-12 mx-auto px-5"
           style={{ maxWidth: "1000px" }}
         >
           <div className="content mx-auto">
@@ -128,7 +129,7 @@ const Create = ({ marketplace, nft }) => {
                 placeholder="Price in ETH"
               />
               <div className="d-grid px-0">
-                <Button onClick={createNFT} variant="primary" size="lg">
+                <Button onClick={createNFT} className="btn-dark" size="lg">
                   Create & List NFT!
                 </Button>
               </div>
