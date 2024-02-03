@@ -13,6 +13,7 @@ describe("NFTMarketplace", async () => {
     [deployer, add1, add2] = await ethers.getSigners();
     nft = await NFT.deploy();
     marketplace = await Marketplace.deploy(feepercent);
+    console.log(marketplace)
   });
 
   describe("Deployment", () => {

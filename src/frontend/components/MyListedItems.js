@@ -29,6 +29,7 @@ export default function MyListedItems({ marketplace, nft, account }) {
   const loadListedItems = async () => {
     // Load all sold items that the user listed
     const itemCount = await marketplace.itemCount()
+    console.log(itemCount)
     let listedItems = []
     let soldItems = []
     for (let indx = 1; indx <= itemCount; indx++) {

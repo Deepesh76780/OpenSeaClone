@@ -87,8 +87,9 @@ const Create = ({ marketplace, nft }) => {
     const id = await nft.tokenCount();
     await (await nft.setApprovalForAll(marketplace.address, true)).wait();
     const listingPrice = ethers.utils.parseEther(price.toString());
-    await (await marketplace.makeItem(nft.address, id, listingPrice)).wait();
+    await (await marketplace.makeItems(nft.address, id, listingPrice)).wait();
   };
+  
   return (
     <div className="container-fluid mt-5">
       <div className="row">
